@@ -14,7 +14,6 @@ export default function App() {
   // const { gpsData, isGPSActive, startWatching, stopWatching } =
   //   useGpsServiceWorker();
   const { gpsData, isGPSActive, startWatching, stopWatching } = useGps({ highAccuracy });
-  const latestGpsData = gpsData.length > 0 ? gpsData[gpsData.length - 1] : null;
 
   return (
     <main className="mx-auto max-w-screen-l">
@@ -26,22 +25,14 @@ export default function App() {
           highAccuracy={highAccuracy}
           setHighAccuracy={setHighAccuracy}
         />
-
-        {latestGpsData && (
-          <MarkerInfo
-            className="grid grid-cols-1 md:grid-cols-4 gap-6"
-            title={`Current position`}
-            coords={latestGpsData.coords}
-          />
-        )}
       </div>
 
       <Card className="w-full p-5" style={{ height: "400px" }}>
         {gpsData.length > 0 && <GoogleMap data={gpsData} isGPSActive={isGPSActive} />}
       </Card>
 
-      {latestGpsData && (
-        <Card className="w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {gpsData.length > 0 && (
+        <div className="w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {gpsData.map(({ coords }, index) => (
             <MarkerInfo
               key={index}
@@ -49,7 +40,7 @@ export default function App() {
               coords={coords}
             />
           ))}
-        </Card>
+        </div>
       )}
     </main>
   );

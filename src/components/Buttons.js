@@ -6,7 +6,7 @@ const Buttons = ({ isGPSActive, startWatching, stopWatching, highAccuracy, setHi
   };
 
     return (
-    <div className="container p-5 flex items-center justify-between">
+    <div className="w-full gap-4 flex items-center justify-between">
       {isGPSActive ? (
         <Button variant="contained" color="error" onClick={stopWatching}>
           Stop GPS tracking
