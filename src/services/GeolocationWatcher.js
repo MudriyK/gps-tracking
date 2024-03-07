@@ -6,6 +6,9 @@ import {
 class GeolocationWatcher {
   constructor() {
     this.watchID = null;
+    this.lastUpdateTime = 0; // Store the time of the last update
+    this.updateInterval = 3000; // Desired interval between updates in milliseconds
+
   }
 
   // startWatchingMock(successCallback, errorCallback) {
@@ -18,14 +21,21 @@ class GeolocationWatcher {
   // }
 
   startWatching(successCallback, errorCallback, options = {}) {
+    if (this.watchID !== null) {
+      console.log("Already watching position.");
+      return;
+    }
+
     if ("geolocation" in navigator) {
       this.watchID = navigator.geolocation.watchPosition(
         (position) => {
-          successCallback(position);
+          const currentTime = new Date().getTime();
+          if (currentTime - this.lastUpdateTime >= this.updateInterval) {
+            successCallback(position);
+            this.lastUpdateTime = currentTime; // Update the last update time
+          }
         },
-        (error) => {
-          errorCallback(error);
-        },
+        errorCallback,
         {
           ...GEO_LOCATION_OPTIONS,
           options
