@@ -3,7 +3,7 @@ import { GeolocationWatcher } from "../services";
 
 const geoWatcher = new GeolocationWatcher();
 
-const useGps = () => {
+const useGps = ({ highAccuracy }) => {
   const [gpsData, setGpsData] = useState([]);
   const [isGPSActive, setIsGPSActive] = useState(false);
 
@@ -18,9 +18,10 @@ const useGps = () => {
       },
       (error) => {
         console.error("Error occurred: ", error.message);
-      }
+      },
+      { enableHighAccuracy: highAccuracy }
     );
-  }, [setIsGPSActive]);
+  }, [setIsGPSActive, highAccuracy]);
 
   const stopWatching = useCallback(async () => {
     setIsGPSActive(false);

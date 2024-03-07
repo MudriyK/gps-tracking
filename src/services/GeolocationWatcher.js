@@ -1,40 +1,40 @@
-// import { MOCKED_GPS_DATA } from "../constants";
-
-const options = {
-  maximumAge: 5000, // Accept a cached position whose age is no greater than the specified time in milliseconds
-  timeout: 5000, // The maximum length of time (in milliseconds) the device is allowed to take in order to return a position
-  enableHighAccuracy: true, // Provides a hint that the application needs the best possible results
-};
+import {
+  // MOCKED_GPS_DATA,
+  GEO_LOCATION_OPTIONS
+} from "../constants";
 
 class GeolocationWatcher {
   constructor() {
-    this.watchID = null; // This will hold the ID of the watchPosition call
+    this.watchID = null;
   }
 
-  // Method to start watching the position
-  startWatching(successCallback, errorCallback) {
-    // let currentIndex = 0;
+  // startWatchingMock(successCallback, errorCallback) {
+  //   let currentIndex = 0;
+  //
+  //   setInterval(() => {
+  //     successCallback(MOCKED_GPS_DATA[currentIndex]);
+  //     currentIndex++;
+  //   }, 4000);
+  // }
 
+  startWatching(successCallback, errorCallback, options = {}) {
     if ("geolocation" in navigator) {
       this.watchID = navigator.geolocation.watchPosition(
         (position) => {
-          // Call the success callback function with the position object
           successCallback(position);
-          // successCallback(MOCKED_GPS_DATA[currentIndex]);
-          // currentIndex++;
         },
         (error) => {
-          // Call the error callback function with the error object
           errorCallback(error);
         },
-        options
+        {
+          ...GEO_LOCATION_OPTIONS,
+          options
+        }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
   }
-
-  // Method to stop watching the position
   stopWatching() {
     if (this.watchID !== null) {
       navigator.geolocation.clearWatch(this.watchID);

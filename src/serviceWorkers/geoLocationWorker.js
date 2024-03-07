@@ -4,8 +4,6 @@ const geoWatcher = new GeolocationWatcher();
 
 //eslint-disable-next-line no-restricted-globals
 self.onmessage = (e) => {
-  console.log("TestWroker GEO received message ", e);
-  //Start or stop watching location based on the message from the main thread
   if (e.data.action === "START") {
     geoWatcher.startWatching(
       async (position) => {

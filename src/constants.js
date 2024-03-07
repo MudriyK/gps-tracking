@@ -20,4 +20,10 @@ const MOCKED_GPS_DATA = [
   { coords: { latitude: 48.6415658, longitude: 22.28756 } },
 ];
 
-export { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM, MOCKED_GPS_DATA };
+const GEO_LOCATION_OPTIONS = {
+  maximumAge: 5000, // Accept a cached position whose age is no greater than the specified time in milliseconds
+  timeout: 5000, // The maximum length of time (in milliseconds) the device is allowed to take in order to return a position
+  enableHighAccuracy: true, // Provides a hint that the application needs the best possible results
+};
+
+export { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM, MOCKED_GPS_DATA, GEO_LOCATION_OPTIONS };

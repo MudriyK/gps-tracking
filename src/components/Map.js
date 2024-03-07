@@ -2,7 +2,7 @@ import { useRef, useState, useMemo, useEffect } from "react";
 import GoogleMapReact from "google-map-react";
 import { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM } from "../constants";
 
-const GoogleMap = ({ data }) => {
+const GoogleMap = ({ data, isGPSActive }) => {
   const mapRef = useRef();
   const mapsRef = useRef();
   const polylineRef = useRef();
@@ -17,12 +17,13 @@ const GoogleMap = ({ data }) => {
 
   const routeData = useMemo(
     () =>
-      data.map(({ coords }) => {
+      data.map(({ coords }, index) => {
         return {
           lat: coords.latitude,
           lng: coords.longitude,
           speed: coords.speed,
-          info: `Speed: ${coords.speed * 3.6 || 0} km/h`,
+          isStart: index === 0,
+          isFinish: data.length - 1 === index && index !== 0,
         };
       }),
     [data]
@@ -44,27 +45,25 @@ const GoogleMap = ({ data }) => {
     });
 
     routePath.setMap(mapRef.current);
+  };
 
-    if (path.length > 0) {
-      path.forEach((waypoint) => {
-        const marker = new mapsRef.current.Marker({
-          position: { lat: waypoint.lat, lng: waypoint.lng },
-          map: mapRef.current,
-        });
+  const renderMarker = (waypoint) => {
+    const marker = new mapsRef.current.Marker({
+      position: { lat: waypoint.lat, lng: waypoint.lng },
+      map: mapRef.current,
+    });
 
-        const infoWindow = new mapsRef.current.InfoWindow({
-          content: waypoint.info,
-        });
+    const infoWindow = new mapsRef.current.InfoWindow({
+      content: waypoint.content
+    });
 
-        marker.addListener("click", () => {
-          infoWindow.open({
-            anchor: marker,
-            map: mapRef.current,
-            shouldFocus: false,
-          });
-        });
+    marker.addListener("click", () => {
+      infoWindow.open({
+        anchor: marker,
+        map: mapRef.current,
+        shouldFocus: false,
       });
-    }
+    });
   };
 
   useEffect(() => {
@@ -72,6 +71,30 @@ const GoogleMap = ({ data }) => {
       renderRoute(routeData);
     }
   }, [isGoogleApiLoaded, routeData]);
+
+  useEffect(() => {
+    if (!isGoogleApiLoaded) {
+      return;
+    }
+
+    if (routeData.length === 1) {
+      const startWaypoint = routeData[0];
+
+      renderMarker({
+        ...startWaypoint,
+        content: 'Start'
+      });
+    }
+
+    if (!isGPSActive && routeData.length > 1) {
+      const finishWaypoint = routeData[routeData.length - 1];
+
+      renderMarker({
+        ...finishWaypoint,
+        content: 'Finish'
+      });
+    }
+  }, [isGoogleApiLoaded, isGPSActive, routeData]);
 
   return (
     <GoogleMapReact

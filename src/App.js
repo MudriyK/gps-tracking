@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Card } from "@mui/material";
 import { GoogleMap, MarkerInfo, Buttons } from "./components";
+import { GEO_LOCATION_OPTIONS } from "./constants";
 import {
   useGps,
   // useGpsServiceWorker
@@ -8,9 +10,10 @@ import {
 import "./App.css";
 
 export default function App() {
+  const [highAccuracy, setHighAccuracy] = useState(GEO_LOCATION_OPTIONS.enableHighAccuracy);
   // const { gpsData, isGPSActive, startWatching, stopWatching } =
   //   useGpsServiceWorker();
-  const { gpsData, isGPSActive, startWatching, stopWatching } = useGps();
+  const { gpsData, isGPSActive, startWatching, stopWatching } = useGps({ highAccuracy });
   const latestGpsData = gpsData.length > 0 ? gpsData[gpsData.length - 1] : null;
 
   return (
@@ -20,6 +23,8 @@ export default function App() {
           isGPSActive={isGPSActive}
           startWatching={startWatching}
           stopWatching={stopWatching}
+          highAccuracy={highAccuracy}
+          setHighAccuracy={setHighAccuracy}
         />
 
         {latestGpsData && (
@@ -32,7 +37,7 @@ export default function App() {
       </div>
 
       <Card className="w-full p-5" style={{ height: "400px" }}>
-        {gpsData.length > 0 && <GoogleMap data={gpsData} />}
+        {gpsData.length > 0 && <GoogleMap data={gpsData} isGPSActive={isGPSActive} />}
       </Card>
 
       {latestGpsData && (
