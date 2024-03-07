@@ -22,6 +22,7 @@ class WakeLockWatcher {
         console.error(`Failed to activate Screen Wake Lock: ${e.name}, ${e.message}`);
       }
     } else {
+      alert('wakeLock not supported');
       console.log('Screen Wake Lock API is not supported by this browser or wake lock is already acquired.');
     }
   }

@@ -1,12 +1,12 @@
 import { Card, CardContent, Typography } from "@mui/material";
 
 const getTopSpeed = (speedData) => speedData.length > 0 ? Math.max(...speedData) : 0;
-const getAverageSpeed = (speedData) => (speedData.reduce((partialSum, a) => partialSum + a, 0)) / speedData.length;
+const getAverageSpeed = (speedData) =>(speedData.reduce((partialSum, a) => partialSum + a, 0)) / speedData.length;
 const getCurrentSpeed = (speedData) => speedData[speedData.length - 1];
-const formatToKmPerHour = (value) => `${value * 3.6 || 0} km/h`;
+const formatToKmPerHour = (value) => `${Math.round((value * 3.6 || 0))} km/h`;
 
 const SpeedPanel = ({ data }) => {
-  const speedData = data.map(({ speed }) => speed);
+  const speedData = data.map(({ coords }) => coords?.speed);
   const currentSpeed = formatToKmPerHour(getCurrentSpeed(speedData));
   const averageSpeed = formatToKmPerHour(getAverageSpeed(speedData));
   const topSpeed = formatToKmPerHour(getTopSpeed(speedData));
