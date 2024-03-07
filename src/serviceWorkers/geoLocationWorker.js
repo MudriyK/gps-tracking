@@ -1,6 +1,6 @@
-import { GeolocationWatcher } from "../services";
+import { GeolocationService } from "../services";
 
-const geoWatcher = new GeolocationWatcher();
+const geoWatcher = new GeolocationService();
 
 //eslint-disable-next-line no-restricted-globals
 self.onmessage = (e) => {

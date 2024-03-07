@@ -3,12 +3,11 @@ import {
   GEO_LOCATION_OPTIONS
 } from "../constants";
 
-class GeolocationWatcher {
+class GeolocationService {
   constructor() {
     this.watchID = null;
     this.lastUpdateTime = 0; // Store the time of the last update
     this.updateInterval = 3000; // Desired interval between updates in milliseconds
-
   }
 
   // startWatchingMock(successCallback, errorCallback) {
@@ -27,6 +26,7 @@ class GeolocationWatcher {
     }
 
     if ("geolocation" in navigator) {
+      console.log("Started watching position.");
       this.watchID = navigator.geolocation.watchPosition(
         (position) => {
           const currentTime = new Date().getTime();
@@ -54,4 +54,4 @@ class GeolocationWatcher {
   }
 }
 
-export { GeolocationWatcher };
+export { GeolocationService };

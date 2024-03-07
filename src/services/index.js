@@ -1,2 +1,2 @@
-export { GeolocationWatcher } from "./GeolocationWatcher";
-export { WakeLockWatcher } from "./WakeLockWatcher";
+export { GeolocationService } from "./GeolocationService";
+export { WakeLockService } from "./WakeLockService";
