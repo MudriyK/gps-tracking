@@ -97,13 +97,15 @@ const GoogleMap = ({ data, isGPSActive }) => {
   }, [isGoogleApiLoaded, isGPSActive, routeData]);
 
   return (
-    <GoogleMapReact
-      bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
-      defaultCenter={routeData[0] || { lat: 0, lng: 0 }}
-      defaultZoom={MAP_DEFAULT_ZOOM}
-      yesIWantToUseGoogleMapApiInternals
-      onGoogleApiLoaded={onGoogleApiLoaded}
-    />
+    <div className="w-full p-5" style={{ height: "400px" }}>
+      <GoogleMapReact
+        bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
+        defaultCenter={routeData[0] || { lat: 0, lng: 0 }}
+        defaultZoom={MAP_DEFAULT_ZOOM}
+        yesIWantToUseGoogleMapApiInternals
+        onGoogleApiLoaded={onGoogleApiLoaded}
+      />
+    </div>
   );
 };
 

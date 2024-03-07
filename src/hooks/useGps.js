@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
-import { GeolocationWatcher } from "../services";
+import { useCallback, useState, useEffect } from "react";
+import { GeolocationWatcher, WakeLockWatcher } from "../services";
 
 const geoWatcher = new GeolocationWatcher();
+const wakeLockWatcher = new WakeLockWatcher();
 
 const useGps = ({ highAccuracy }) => {
   const [gpsData, setGpsData] = useState([]);
@@ -9,6 +10,8 @@ const useGps = ({ highAccuracy }) => {
 
   const startWatching = useCallback(async () => {
     setIsGPSActive(true);
+
+    await wakeLockWatcher.start();
 
     geoWatcher.startWatching(
       async (position) => {
@@ -25,8 +28,16 @@ const useGps = ({ highAccuracy }) => {
 
   const stopWatching = useCallback(async () => {
     setIsGPSActive(false);
+
+    await wakeLockWatcher.finish();
     geoWatcher.stopWatching();
   }, [setIsGPSActive]);
+
+  useEffect(() => {
+    return () => {
+      stopWatching();
+    };
+  }, []);
 
   return {
     gpsData,
