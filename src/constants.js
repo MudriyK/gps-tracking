@@ -26,4 +26,9 @@ const GEO_LOCATION_OPTIONS = {
   enableHighAccuracy: true, // Provides a hint that the application needs the best possible results
 };
 
-export { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM, MOCKED_GPS_DATA, GEO_LOCATION_OPTIONS };
+const GOOGLE_MAP_BOOTSTRAP_OPTIONS = {
+  key: GOOGLE_API_KEY,
+  libraries:['geometry']
+};
+
+export { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM, MOCKED_GPS_DATA, GEO_LOCATION_OPTIONS, GOOGLE_MAP_BOOTSTRAP_OPTIONS };

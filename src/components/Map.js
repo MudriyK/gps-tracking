@@ -1,8 +1,8 @@
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import GoogleMapReact from "google-map-react";
-import { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM } from "../constants";
+import { GOOGLE_MAP_BOOTSTRAP_OPTIONS, MAP_DEFAULT_ZOOM } from "../constants";
 
-const GoogleMap = ({ data, isGPSActive }) => {
+const GoogleMap = ({ data, isGPSActive, setTotalDistance }) => {
   const mapRef = useRef();
   const mapsRef = useRef();
   const polylineRef = useRef();
@@ -54,7 +54,7 @@ const GoogleMap = ({ data, isGPSActive }) => {
     });
 
     const infoWindow = new mapsRef.current.InfoWindow({
-      content: waypoint.content
+      content: waypoint.content,
     });
 
     marker.addListener("click", () => {
@@ -65,6 +65,31 @@ const GoogleMap = ({ data, isGPSActive }) => {
       });
     });
   };
+
+  const calculateRouteDistance = useCallback(
+    (data) => {
+      let totalDistance = 0;
+      if (data.length < 2) return totalDistance; // Need at least two points to calculate distance
+
+      const latLngs = data.map(
+        ({ lat, lng }) => new mapsRef.current.LatLng(lat, lng)
+      );
+
+      for (let i = 0; i < latLngs.length - 1; i++) {
+        // Calculate distance between consecutive points
+        const distance =
+          mapsRef.current.geometry.spherical.computeDistanceBetween(
+            latLngs[i],
+            latLngs[i + 1]
+          );
+
+        totalDistance += distance;
+      }
+
+      setTotalDistance(totalDistance); // Distance in meters
+    },
+    [setTotalDistance]
+  );
 
   useEffect(() => {
     if (isGoogleApiLoaded) {
@@ -82,7 +107,7 @@ const GoogleMap = ({ data, isGPSActive }) => {
 
       renderMarker({
         ...startWaypoint,
-        content: 'Start'
+        content: "Start",
       });
     }
 
@@ -91,15 +116,17 @@ const GoogleMap = ({ data, isGPSActive }) => {
 
       renderMarker({
         ...finishWaypoint,
-        content: 'Finish'
+        content: "Finish",
       });
+
+      calculateRouteDistance(routeData);
     }
-  }, [isGoogleApiLoaded, isGPSActive, routeData]);
+  }, [isGoogleApiLoaded, isGPSActive, routeData, calculateRouteDistance]);
 
   return (
     <div className="w-full p-5" style={{ height: "400px" }}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
+        bootstrapURLKeys={GOOGLE_MAP_BOOTSTRAP_OPTIONS}
         defaultCenter={routeData[0] || { lat: 0, lng: 0 }}
         defaultZoom={MAP_DEFAULT_ZOOM}
         yesIWantToUseGoogleMapApiInternals
