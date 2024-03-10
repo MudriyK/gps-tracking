@@ -9,7 +9,6 @@ class WakeLockService {
       try {
         this.wakeLock = await navigator.wakeLock.request('screen');
         this.wakeLockReleased = false;
-        alert('WakeLock activated for better geolocation');
         console.log('Screen Wake Lock activated.');
 
         // Add an event listener to re-acquire the wake lock if the page becomes visible again
@@ -23,7 +22,6 @@ class WakeLockService {
         console.error(`Failed to activate Screen Wake Lock: ${e.name}, ${e.message}`);
       }
     } else {
-      alert('WakeLock not supported, please keep page active for better geolocation');
       console.log('Screen Wake Lock API is not supported by this browser or wake lock is already acquired.');
     }
   }

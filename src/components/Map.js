@@ -111,6 +111,10 @@ const GoogleMap = ({ data, isGPSActive, setTotalDistance }) => {
       });
     }
 
+    if (routeData.length > 1) {
+      calculateRouteDistance(routeData);
+    }
+
     if (!isGPSActive && routeData.length > 1) {
       const finishWaypoint = routeData[routeData.length - 1];
 
@@ -118,8 +122,6 @@ const GoogleMap = ({ data, isGPSActive, setTotalDistance }) => {
         ...finishWaypoint,
         content: "Finish",
       });
-
-      calculateRouteDistance(routeData);
     }
   }, [isGoogleApiLoaded, isGPSActive, routeData, calculateRouteDistance]);
 
