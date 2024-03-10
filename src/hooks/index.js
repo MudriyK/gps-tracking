@@ -1,2 +1,2 @@
 export { useGps } from "./useGps";
-export { useMapsWorker } from "./useMapsWorker";
+export { usePreventSleep } from "./usePreventSleep";
