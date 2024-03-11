@@ -8,6 +8,7 @@ import { throttle } from "../utils";
 class GeolocationService {
   constructor() {
     this._watchID = null;
+    // this._testDataInterval = null;
     this._supportsGeolocation = "geolocation" in navigator;
   }
   // Enable testing data
@@ -16,7 +17,7 @@ class GeolocationService {
   //
   //   console.log("Started watching position.");
   //
-  //   this._updateInterval = setInterval(() => {
+  //   this._testDataInterval = setInterval(() => {
   //     successCallback(MOCKED_GPS_DATA[currentIndex]);
   //     currentIndex++;
   //   }, 2000);
