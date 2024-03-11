@@ -7,11 +7,12 @@ class GeolocationService {
   constructor() {
     this.watchID = null;
     this.testDataInterval = null;
-    this.lastUpdateTime = 0; // Store the time of the last update
-    this.updateInterval = 3000; // Desired interval between updates in milliseconds
+    this.lastUpdateTime = 0;
+    this.updateInterval = 3000;
+    this.supportsGeolocation = "geolocation" in navigator;
   }
 
-  // startWatching(successCallback, errorCallback) {
+  // enableGeolocation(successCallback, errorCallback) {
   //   let currentIndex = 0;
   //
   //   console.log("Started watching position.");
@@ -22,7 +23,7 @@ class GeolocationService {
   //   }, 4000);
   // }
   //
-  // stopWatching() {
+  // disableGeolocation() {
   //   if (this.testDataInterval !== null) {
   //     clearInterval(this.testDataInterval);
   //     navigator.geolocation.clearWatch(this.watchID);
@@ -30,22 +31,25 @@ class GeolocationService {
   //     console.log("Stopped watching position.");
   //   }
   // }
+  _throttlePosition(callback) {
+    const currentTime = new Date().getTime();
+    if (currentTime - this.lastUpdateTime >= this.updateInterval) {
+      callback();
+      this.lastUpdateTime = currentTime; // Update the last update time
+    }
+  }
 
-  startWatching(successCallback, errorCallback, options = {}) {
+  enableGeolocation(successCallback, errorCallback, options = {}) {
     if (this.watchID !== null) {
       console.log("Already watching position.");
       return;
     }
 
-    if ("geolocation" in navigator) {
+    if (this.supportsGeolocation) {
       console.log("Started watching position.");
       this.watchID = navigator.geolocation.watchPosition(
         (position) => {
-          const currentTime = new Date().getTime();
-          if (currentTime - this.lastUpdateTime >= this.updateInterval) {
-            successCallback(position);
-            this.lastUpdateTime = currentTime; // Update the last update time
-          }
+          this._throttlePosition(() => successCallback(position));
         },
         errorCallback,
         {
@@ -57,7 +61,7 @@ class GeolocationService {
       console.error("Geolocation is not supported by this browser.");
     }
   }
-  stopWatching() {
+  disableGeolocation() {
     if (this.watchID !== null) {
       navigator.geolocation.clearWatch(this.watchID);
       this.watchID = null; // Reset the watchID after stopping

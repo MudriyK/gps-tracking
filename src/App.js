@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoogleMap, MarkerInfo, Buttons, InfoPanel } from "./components";
 import { GEO_LOCATION_OPTIONS } from "./constants";
-import { useGps, usePreventSleep } from "./hooks";
+import { useGps } from "./hooks";
 
 import "./App.css";
 
@@ -13,8 +13,6 @@ export default function App() {
   const { gpsData, isGPSActive, startWatching, stopWatching } = useGps({
     highAccuracy,
   });
-
-  usePreventSleep();
 
   return (
     <main className="mx-auto max-w-screen-l">
