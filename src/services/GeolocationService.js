@@ -31,13 +31,6 @@ class GeolocationService {
   //     console.log("Stopped watching position.");
   //   }
   // }
-  _throttlePosition(callback) {
-    const currentTime = new Date().getTime();
-    if (currentTime - this.lastUpdateTime >= this.updateInterval) {
-      callback();
-      this.lastUpdateTime = currentTime; // Update the last update time
-    }
-  }
 
   enableGeolocation(successCallback, errorCallback, options = {}) {
     if (this.watchID !== null) {
@@ -46,10 +39,14 @@ class GeolocationService {
     }
 
     if (this.supportsGeolocation) {
+      const currentTime = new Date().getTime();
       console.log("Started watching position.");
       this.watchID = navigator.geolocation.watchPosition(
         (position) => {
-          this._throttlePosition(() => successCallback(position));
+          if (currentTime - this.lastUpdateTime >= this.updateInterval) {
+            successCallback(position)
+            this.lastUpdateTime = currentTime; // Update the last update time
+          }
         },
         errorCallback,
         {
