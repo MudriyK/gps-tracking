@@ -75,7 +75,7 @@ import { media } from "./media";
 //     alert('Wakelock disabled');
 //
 //     this.isEnabled = false;
-//   };
+//   };s
 // }
 
 const oldIOS = () =>
@@ -108,8 +108,6 @@ class WakeLockService {
       };
       document.addEventListener("visibilitychange", handleVisibilityChange);
       document.addEventListener("fullscreenchange", handleVisibilityChange);
-    } else if (oldIOS()) {
-      this.noSleepTimer = null;
     } else {
       // Set up no sleep video element
       this.noSleepVideo = document.createElement("video");
@@ -187,14 +185,6 @@ class WakeLockService {
         this._wakeLock.release();
       }
       this._wakeLock = null;
-    } else if (oldIOS()) {
-      if (this.noSleepTimer) {
-        console.warn(`
-          NoSleep now disabled for older iOS devices.
-        `);
-        window.clearInterval(this.noSleepTimer);
-        this.noSleepTimer = null;
-      }
     } else {
       this.noSleepVideo.pause();
     }
