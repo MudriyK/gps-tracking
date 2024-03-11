@@ -44,7 +44,7 @@ class GeolocationService {
       this.watchID = navigator.geolocation.watchPosition(
         (position) => {
           if (currentTime - this.lastUpdateTime >= this.updateInterval) {
-            successCallback(position)
+            successCallback(position);
             this.lastUpdateTime = currentTime; // Update the last update time
           }
         },
