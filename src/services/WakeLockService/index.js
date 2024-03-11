@@ -56,7 +56,7 @@ class WakeLockService {
         this._isEnabled = true;
       }
 
-      console.log("WakeLock enabled")
+      console.log("WakeLock enabled");
     } catch (err) {
       this._isEnabled = false;
 
@@ -74,7 +74,7 @@ class WakeLockService {
       await this._noSleepVideo.pause();
     }
 
-    console.log("WakeLock disabled")
+    console.log("WakeLock disabled");
     this._isEnabled = false;
   }
 }
