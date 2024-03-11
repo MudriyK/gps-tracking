@@ -2,7 +2,7 @@ import { media } from "./media";
 
 // class WakeLockService {
 //   constructor() {
-//     this.isEnabled = false;
+//     this._isEnabled = false;
 //     this.hasNativeWakeLock = "wakeLock" in navigator;
 //     this._setup();
 //   }
@@ -45,25 +45,25 @@ import { media } from "./media";
 //   };
 //
 //   enableWakeLock = async () => {
-//     if (this.isEnabled) return;
+//     if (this._isEnabled) return;
 //
 //     if (this.hasNativeWakeLock) {
 //       try {
 //         alert('Native wakelock enabled');
 //         this._wakeLock = await navigator.wakeLock.request("screen");
-//         this.isEnabled = true;
+//         this._isEnabled = true;
 //       } catch (err) {
 //         console.error(`${err.name}, ${err.message}`);
 //       }
 //     } else {
 //       alert('Fallback wakelock enabled');
 //       this._noSleepVideo.play().catch(console.error);
-//       this.isEnabled = true;
+//       this._isEnabled = true;
 //     }
 //   };
 //
 //   disableWakeLock = () => {
-//     if (!this.isEnabled) return;
+//     if (!this._isEnabled) return;
 //
 //     if (this.hasNativeWakeLock && this._wakeLock) {
 //       this._wakeLock.release();
@@ -74,30 +74,31 @@ import { media } from "./media";
 //
 //     alert('Wakelock disabled');
 //
-//     this.isEnabled = false;
+//     this._isEnabled = false;
 //   };s
 // }
 
 class WakeLockService {
   constructor() {
-    this.enabled = false;
+    this._isEnabled = false;
     this._wakeLock = null;
     this._noSleepVideo = null;
-    this._nativeWakeLock = "wakeLock" in navigator;
+    this._hasNativeWakeLock = "wakeLock" in navigator;
 
     this._setupWakeLock();
   }
 
-  _setupWakeLock() {
-    if (this._nativeWakeLock) {
+  async _handleVisibilityChange() {
+    if (this._wakeLock !== null && document.visibilityState === "visible") {
+      await this.enableWakeLock();
+    }
+  };
+
+  async _setupWakeLock() {
+    if (this._hasNativeWakeLock) {
       this._wakeLock = null;
-      const handleVisibilityChange = () => {
-        if (this._wakeLock !== null && document.visibilityState === "visible") {
-          this.enableWakeLock();
-        }
-      };
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-      document.addEventListener("fullscreenchange", handleVisibilityChange);
+      document.addEventListener("visibilitychange", this._handleVisibilityChange);
+      document.addEventListener("fullscreenchange", this._handleVisibilityChange);
     } else {
       // Set up no sleep video element
       this._noSleepVideo = document.createElement("video");
@@ -131,68 +132,34 @@ class WakeLockService {
     element.appendChild(source);
   }
 
-    enableWakeLock = async () => {
-    if (this.isEnabled) return;
+  async enableWakeLock() {
+    if (this._isEnabled) return;
 
-    if (this._nativeWakeLock) {
-      try {
+    try {
+      if (this._hasNativeWakeLock) {
         this._wakeLock = await navigator["wakeLock"].request("screen");
-        this.isEnabled = true;
-      } catch (err) {
-        console.error(`${err.name}, ${err.message}`);
-      }
-    } else {
-      try {
+        this._isEnabled = true;
+      } else {
         await this._noSleepVideo.play();
-
-        this.isEnabled = true;
-      } catch (e) {
-        this.isEnabled = false;
+        this._isEnabled = true;
       }
+    } catch (err) {
+      this._isEnabled = false;
+
+      console.error(`${err.name}, ${err.message}`);
     }
   };
 
-  // enableWakeLock() {
-  //   if (this._nativeWakeLock) {
-  //     return navigator.wakeLock
-  //     .request("screen")
-  //     .then((wakeLock) => {
-  //       this._wakeLock = wakeLock;
-  //       this.enabled = true;
-  //       console.log("Wake Lock active.");
-  //       this._wakeLock.addEventListener("release", () => {
-  //         console.log("Wake Lock released.");
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       this.enabled = false;
-  //       console.error(`${err.name}, ${err.message}`);
-  //       throw err;
-  //     });
-  //   } else {
-  //     let playPromise = this._noSleepVideo.play();
-  //     return playPromise
-  //     .then((res) => {
-  //       this.enabled = true;
-  //       return res;
-  //     })
-  //     .catch((err) => {
-  //       this.enabled = false;
-  //       throw err;
-  //     });
-  //   }
-  // }
-
-  disableWakeLock() {
-    if (this._nativeWakeLock) {
+  async disableWakeLock() {
+    if (this._hasNativeWakeLock) {
       if (this._wakeLock) {
-        this._wakeLock.release();
+        await this._wakeLock.release();
       }
       this._wakeLock = null;
     } else {
-      this._noSleepVideo.pause();
+      await this._noSleepVideo.pause();
     }
-    this.enabled = false;
+    this._isEnabled = false;
   }
 }
 
