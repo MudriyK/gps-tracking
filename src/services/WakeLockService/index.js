@@ -49,12 +49,14 @@ class WakeLockService {
 
     if (this.hasNativeWakeLock) {
       try {
+        alert('Native wakelock enabled');
         this._wakeLock = await navigator.wakeLock.request("screen");
         this.isEnabled = true;
       } catch (err) {
         console.error(`${err.name}, ${err.message}`);
       }
     } else {
+      alert('Fallback wakelock enabled');
       this._noSleepVideo.play().catch(console.error);
       this.isEnabled = true;
     }
@@ -69,6 +71,8 @@ class WakeLockService {
     } else if (this._noSleepVideo) {
       this._noSleepVideo.pause();
     }
+
+    alert('Wakelock disabled');
 
     this.isEnabled = false;
   };
