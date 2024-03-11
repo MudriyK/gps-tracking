@@ -1,83 +1,5 @@
 import { media } from "./media";
 
-// class WakeLockService {
-//   constructor() {
-//     this._isEnabled = false;
-//     this.hasNativeWakeLock = "wakeLock" in navigator;
-//     this._setup();
-//   }
-//
-//   _setup() {
-//     if (this.hasNativeWakeLock) {
-//       document.addEventListener(
-//         "visibilitychange",
-//         this._handleVisibilityChange
-//       );
-//       document.addEventListener(
-//         "fullscreenchange",
-//         this._handleVisibilityChange
-//       );
-//     } else {
-//       this._noSleepVideo = document.createElement("video");
-//       this._noSleepVideo.setAttribute("playsinline", "");
-//       this._addVideoSources();
-//     }
-//   }
-//
-//   _addVideoSources() {
-//     const addSource = (type, uri) => {
-//       const source = document.createElement("source");
-//       source.src = uri;
-//       source.type = `video/${type}`;
-//       this._noSleepVideo.appendChild(source);
-//     };
-//
-//     addSource("webm", media.webm);
-//     addSource("mp4", media.mp4);
-//
-//     this._noSleepVideo.loop = true;
-//   }
-//
-//   _handleVisibilityChange = () => {
-//     if (document.visibilityState === "visible" && this._wakeLock) {
-//       this.enableWakeLock();
-//     }
-//   };
-//
-//   enableWakeLock = async () => {
-//     if (this._isEnabled) return;
-//
-//     if (this.hasNativeWakeLock) {
-//       try {
-//         alert('Native wakelock enabled');
-//         this._wakeLock = await navigator.wakeLock.request("screen");
-//         this._isEnabled = true;
-//       } catch (err) {
-//         console.error(`${err.name}, ${err.message}`);
-//       }
-//     } else {
-//       alert('Fallback wakelock enabled');
-//       this._noSleepVideo.play().catch(console.error);
-//       this._isEnabled = true;
-//     }
-//   };
-//
-//   disableWakeLock = () => {
-//     if (!this._isEnabled) return;
-//
-//     if (this.hasNativeWakeLock && this._wakeLock) {
-//       this._wakeLock.release();
-//       this._wakeLock = null;
-//     } else if (this._noSleepVideo) {
-//       this._noSleepVideo.pause();
-//     }
-//
-//     alert('Wakelock disabled');
-//
-//     this._isEnabled = false;
-//   };s
-// }
-
 class WakeLockService {
   constructor() {
     this._isEnabled = false;
@@ -88,17 +10,11 @@ class WakeLockService {
     this._setupWakeLock();
   }
 
-  async _handleVisibilityChange() {
-    if (this._wakeLock !== null && document.visibilityState === "visible") {
-      await this.enableWakeLock();
-    }
-  };
-
   async _setupWakeLock() {
     if (this._hasNativeWakeLock) {
       this._wakeLock = null;
-      document.addEventListener("visibilitychange", this._handleVisibilityChange);
-      document.addEventListener("fullscreenchange", this._handleVisibilityChange);
+      // document.addEventListener("visibilitychange", this._handleVisibilityChange);
+      // document.addEventListener("fullscreenchange", this._handleVisibilityChange);
     } else {
       // Set up no sleep video element
       this._noSleepVideo = document.createElement("video");
@@ -149,6 +65,12 @@ class WakeLockService {
       console.error(`${err.name}, ${err.message}`);
     }
   };
+
+  // async _handleVisibilityChange() {
+  //   if (this._wakeLock !== null && document.visibilityState === "visible") {
+  //     await this.enableWakeLock();
+  //   }
+  // };
 
   async disableWakeLock() {
     if (this._hasNativeWakeLock) {

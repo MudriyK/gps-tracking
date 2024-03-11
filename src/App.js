@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { GoogleMap, MarkerInfo, Buttons, InfoPanel } from "./components";
+import {
+  GoogleMap,
+  LeafletMap,
+  LocationInfo,
+  Buttons,
+  InfoPanel
+} from "./components";
 import { GEO_LOCATION_OPTIONS } from "./constants";
 import { useGps } from "./hooks";
 
@@ -28,8 +34,16 @@ export default function App() {
 
       <InfoPanel data={gpsData} totalDistance={totalDistance} />
 
+      {/*{gpsData.length > 0 && (*/}
+      {/*  <GoogleMap*/}
+      {/*    data={gpsData}*/}
+      {/*    isGPSActive={isGPSActive}*/}
+      {/*    setTotalDistance={setTotalDistance}*/}
+      {/*  />*/}
+      {/*)}*/}
+
       {gpsData.length > 0 && (
-        <GoogleMap
+        <LeafletMap
           data={gpsData}
           isGPSActive={isGPSActive}
           setTotalDistance={setTotalDistance}
@@ -39,7 +53,7 @@ export default function App() {
       {gpsData.length > 0 && (
         <div className="w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {gpsData.map(({ coords }, index) => (
-            <MarkerInfo
+            <LocationInfo
               key={index}
               title={`Point ${index + 1}`}
               coords={coords}

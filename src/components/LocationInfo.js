@@ -2,7 +2,7 @@ import { Card, CardContent, Typography } from "@mui/material";
 
 const formatCoordsValue = (value) => parseFloat(value.toFixed(4));
 
-const MarkerInfo = ({ title, coords, className }) => (
+const LocationInfo = ({ title, coords, className }) => (
   <Card>
     <CardContent className={className}>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -21,4 +21,4 @@ const MarkerInfo = ({ title, coords, className }) => (
   </Card>
 );
 
-export { MarkerInfo };
+export { LocationInfo };

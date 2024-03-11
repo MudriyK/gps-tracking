@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import GoogleMapReact from "google-map-react";
-import { GOOGLE_MAP_BOOTSTRAP_OPTIONS, MAP_DEFAULT_ZOOM } from "../constants";
+import { GOOGLE_MAP_BOOTSTRAP_OPTIONS, MAP_DEFAULT_ZOOM } from "../../constants";
 
 const GoogleMap = ({ data, isGPSActive, setTotalDistance }) => {
   const mapRef = useRef();

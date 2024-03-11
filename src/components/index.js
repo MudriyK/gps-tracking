@@ -1,4 +1,5 @@
-export { GoogleMap } from "./Map";
-export { MarkerInfo } from "./MarkerInfo";
+export { LocationInfo } from "./LocationInfo";
 export { Buttons } from "./Buttons";
 export { InfoPanel } from "./InfoPanel";
+
+export * from "./Maps";
