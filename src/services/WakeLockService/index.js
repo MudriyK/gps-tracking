@@ -167,21 +167,6 @@ class WakeLockService {
         console.error(`${err.name}, ${err.message}`);
         throw err;
       });
-    } else if (oldIOS()) {
-      this.disableWakeLock();
-      console.warn(`
-        NoSleep enabled for older iOS devices. This can interrupt
-        active or long-running network requests from completing successfully.
-        See https://github.com/richtr/NoSleep.js/issues/15 for more details.
-      `);
-      this.noSleepTimer = window.setInterval(() => {
-        if (!document.hidden) {
-          window.location.href = window.location.href.split("#")[0];
-          window.setTimeout(window.stop, 0);
-        }
-      }, 15000);
-      this.enabled = true;
-      return Promise.resolve();
     } else {
       let playPromise = this.noSleepVideo.play();
       return playPromise
