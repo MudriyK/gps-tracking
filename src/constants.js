@@ -1,6 +1,6 @@
-const GOOGLE_API_KEY = "AIzaSyBjZiK7hyPugpdsy8smXoTgUS-LbCIpLxc";
-
 const MAP_DEFAULT_ZOOM = 16;
+
+const GEOLOCATION_THROTTLE_TIMEOUT = 3000;
 
 const MOCKED_GPS_DATA = [
   { coords: { latitude: 48.6415658, longitude: 22.28756, speed: 0 } },
@@ -21,16 +21,9 @@ const MOCKED_GPS_DATA = [
 ];
 
 const GEO_LOCATION_OPTIONS = {
-  maximumAge: 5000, // Accept a cached position whose age is no greater than the specified time in milliseconds
-  timeout: 5000, // The maximum length of time (in milliseconds) the device is allowed to take in order to return a position
+  // maximumAge: GEOLOCATION_THROTTLE_TIMEOUT, // Accept a cached position whose age is no greater than the specified time in milliseconds
+  timeout: GEOLOCATION_THROTTLE_TIMEOUT, // The maximum length of time (in milliseconds) the device is allowed to take in order to return a position
   enableHighAccuracy: true, // Provides a hint that the application needs the best possible results
 };
 
-const GOOGLE_MAP_BOOTSTRAP_OPTIONS = {
-  key: GOOGLE_API_KEY,
-  libraries:['geometry']
-};
-
-const NO_SLEEP_REFRESH_TIMEOUT = 10000; // 10sec
-
-export { GOOGLE_API_KEY, MAP_DEFAULT_ZOOM, MOCKED_GPS_DATA, GEO_LOCATION_OPTIONS, GOOGLE_MAP_BOOTSTRAP_OPTIONS, NO_SLEEP_REFRESH_TIMEOUT };
+export { GEOLOCATION_THROTTLE_TIMEOUT, MAP_DEFAULT_ZOOM, MOCKED_GPS_DATA, GEO_LOCATION_OPTIONS };

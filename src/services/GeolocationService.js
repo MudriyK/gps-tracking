@@ -1,15 +1,14 @@
 import {
   // MOCKED_GPS_DATA,
-  GEO_LOCATION_OPTIONS
+  GEO_LOCATION_OPTIONS,
+  GEOLOCATION_THROTTLE_TIMEOUT,
 } from "../constants";
+import { throttle } from "../utils";
 
 class GeolocationService {
   constructor() {
-    this.watchID = null;
-    this.testDataInterval = null;
-    this.lastUpdateTime = 0;
-    this.updateInterval = 3000;
-    this.supportsGeolocation = "geolocation" in navigator;
+    this._watchID = null;
+    this._supportsGeolocation = "geolocation" in navigator;
   }
   // Enable testing data
   // enableGeolocation(successCallback, errorCallback) {
@@ -17,37 +16,35 @@ class GeolocationService {
   //
   //   console.log("Started watching position.");
   //
-  //   this.testDataInterval = setInterval(() => {
+  //   this._updateInterval = setInterval(() => {
   //     successCallback(MOCKED_GPS_DATA[currentIndex]);
   //     currentIndex++;
   //   }, 2000);
   // }
   //
   // disableGeolocation() {
-  //   if (this.testDataInterval !== null) {
-  //     clearInterval(this.testDataInterval);
-  //     navigator.geolocation.clearWatch(this.watchID);
-  //     this.testDataInterval = null;
+  //   if (this._testDataInterval !== null) {
+  //     clearInterval(this._testDataInterval);
+  //     navigator.geolocation.clearWatch(this._watchID);
+  //     this._testDataInterval = null;
   //     console.log("Stopped watching position.");
   //   }
   // }
 
   enableGeolocation(successCallback, errorCallback, options = {}) {
-    if (this.watchID !== null) {
+    if (this._watchID !== null) {
       console.log("Already watching position.");
       return;
     }
 
-    if (this.supportsGeolocation) {
-      const currentTime = new Date().getTime();
+    if (this._supportsGeolocation) {
+      const throttledSuccessCallback = throttle((position) => {
+        successCallback(position);
+      }, GEOLOCATION_THROTTLE_TIMEOUT);
+
       console.log("Started watching position.");
-      this.watchID = navigator.geolocation.watchPosition(
-        (position) => {
-          if (currentTime - this.lastUpdateTime >= this.updateInterval) {
-            successCallback(position);
-            this.lastUpdateTime = currentTime; // Update the last update time
-          }
-        },
+      this._watchID = navigator.geolocation.watchPosition(
+        throttledSuccessCallback,
         errorCallback,
         {
           ...GEO_LOCATION_OPTIONS,
@@ -59,9 +56,9 @@ class GeolocationService {
     }
   }
   disableGeolocation() {
-    if (this.watchID !== null) {
-      navigator.geolocation.clearWatch(this.watchID);
-      this.watchID = null; // Reset the watchID after stopping
+    if (this._watchID !== null) {
+      navigator.geolocation.clearWatch(this._watchID);
+      this._watchID = null; // Reset the watchID after stopping
       console.log("Stopped watching position.");
     }
   }

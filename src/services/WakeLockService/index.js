@@ -7,15 +7,11 @@ class WakeLockService {
     this._noSleepVideo = null;
     this._hasNativeWakeLock = "wakeLock" in navigator;
 
-    this._setupWakeLock();
+    this._setupFallbackWakeLock();
   }
 
-  async _setupWakeLock() {
-    if (this._hasNativeWakeLock) {
-      this._wakeLock = null;
-      // document.addEventListener("visibilitychange", this._handleVisibilityChange);
-      // document.addEventListener("fullscreenchange", this._handleVisibilityChange);
-    } else {
+  async _setupFallbackWakeLock() {
+    if (!this._hasNativeWakeLock) {
       // Set up no sleep video element
       this._noSleepVideo = document.createElement("video");
 
@@ -59,18 +55,14 @@ class WakeLockService {
         await this._noSleepVideo.play();
         this._isEnabled = true;
       }
+
+      console.log("WakeLock enabled")
     } catch (err) {
       this._isEnabled = false;
 
       console.error(`${err.name}, ${err.message}`);
     }
   };
-
-  // async _handleVisibilityChange() {
-  //   if (this._wakeLock !== null && document.visibilityState === "visible") {
-  //     await this.enableWakeLock();
-  //   }
-  // };
 
   async disableWakeLock() {
     if (this._hasNativeWakeLock) {
@@ -81,6 +73,8 @@ class WakeLockService {
     } else {
       await this._noSleepVideo.pause();
     }
+
+    console.log("WakeLock disabled")
     this._isEnabled = false;
   }
 }
