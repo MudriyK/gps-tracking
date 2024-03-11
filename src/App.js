@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import {
-  GoogleMap,
   LeafletMap,
   LocationInfo,
   Buttons,
@@ -20,47 +21,48 @@ export default function App() {
     highAccuracy,
   });
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+
   return (
-    <main className="mx-auto max-w-screen-l">
-      <div className="w-full p-5 flex items-center justify-between">
-        <Buttons
-          isGPSActive={isGPSActive}
-          startWatching={startWatching}
-          stopWatching={stopWatching}
-          highAccuracy={highAccuracy}
-          setHighAccuracy={setHighAccuracy}
-        />
-      </div>
-
-      <InfoPanel data={gpsData} totalDistance={totalDistance} />
-
-      {/*{gpsData.length > 0 && (*/}
-      {/*  <GoogleMap*/}
-      {/*    data={gpsData}*/}
-      {/*    isGPSActive={isGPSActive}*/}
-      {/*    setTotalDistance={setTotalDistance}*/}
-      {/*  />*/}
-      {/*)}*/}
-
-      {gpsData.length > 0 && (
-        <LeafletMap
-          data={gpsData}
-          isGPSActive={isGPSActive}
-          setTotalDistance={setTotalDistance}
-        />
-      )}
-
-      {gpsData.length > 0 && (
-        <div className="w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {gpsData.map(({ coords }, index) => (
-            <LocationInfo
-              key={index}
-              title={`Point ${index + 1}`}
-              coords={coords}
-            />
-          ))}
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <main className="mx-auto max-w-screen-l">
+        <div className="w-full p-5 flex items-center justify-between">
+          <Buttons
+            isGPSActive={isGPSActive}
+            startWatching={startWatching}
+            stopWatching={stopWatching}
+            highAccuracy={highAccuracy}
+            setHighAccuracy={setHighAccuracy}
+          />
         </div>
-      )}
-    </main>
+
+        <InfoPanel data={gpsData} totalDistance={totalDistance} />
+
+        {gpsData.length > 0 && (
+          <LeafletMap
+            data={gpsData}
+            isGPSActive={isGPSActive}
+            setTotalDistance={setTotalDistance}
+          />
+        )}
+
+        {gpsData.length > 0 && (
+          <div className="w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {gpsData.map(({ coords }, index) => (
+              <LocationInfo
+                key={index}
+                title={`Point ${index + 1}`}
+                coords={coords}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+    </ThemeProvider>
   );
 }

@@ -5,6 +5,14 @@ import 'leaflet/dist/leaflet.css';
 
 import { MAP_DEFAULT_ZOOM } from "../../constants";
 
+delete Leaflet.Icon.Default.prototype._getIconUrl;
+
+Leaflet.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
 const MapUtils = ({ positions, setTotalDistance }) => {
   const map = useMap();
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -43,7 +51,7 @@ const MapUtils = ({ positions, setTotalDistance }) => {
 
       calculateRouteDistance(positions);
     }
-  }, [isMapLoaded, positions]);
+  }, [isMapLoaded, positions, calculateRouteDistance, map]);
 
   return null;
 };
@@ -63,9 +71,10 @@ const LeafletMap = ({ data, isGPSActive, setTotalDistance }) => {
       style={{ height: '400px', width: '100%' }}
     >
       <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> contributors'
       />
+
       {positions[0] && (
         <Marker position={positions[0]}>
           <Popup>
